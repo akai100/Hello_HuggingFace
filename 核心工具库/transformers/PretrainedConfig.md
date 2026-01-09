@@ -39,7 +39,8 @@ transformers.(output_hidden_states: bool = False,
 
 + hidden_size, int
 
-  隐藏层维度（核心维度，如 BERT 为 768，Llama-7B 为 4096）
+  隐藏层维度（核心维度，如 BERT 为 768，Llama-7B 为 4096），是每一层神经元的输出维度，在 Transformers 架构中，
+  通常特指Encoder/Decoder 的 Transformer Block（包含多头注意力、前馈网络、残差连接、LayerNorm），num_hidden_layers 就是这类 Block 的数量。
 
 + num_attention_heads, int
 
@@ -55,7 +56,15 @@ transformers.(output_hidden_states: bool = False,
 
 + max_position_embeddings, int, 默认值：521
 
-  模型支持的最大序列长度（上下文窗口大小）
+  模型支持的最大序列长度（上下文窗口大小），是模型能处理的输入序列的最大 token 数量 —— 超过这个长度的文本，模型要么无法处理，要么会丢失信息（截断），要么位置编码失效导致性能暴跌。
+
+  模型的最大序列长度由位置编码的设计决定，这是硬性约束：
+
+  + 固定位置编码（如 BERT 的正弦编码）：位置编码的维度是max_position_embeddings，超过该长度后无对应的位置编码，模型无法识别 token 的位置；
+  
+  + RoPE 编码（如 LLaMA/GPT）：理论上可扩展，但原生训练的max_position_embeddings决定了模型的最优性能区间（扩展后需通过 NTK/RoPE 缩放补偿）；
+
+  + ALiBi 编码：无严格的最大长度限制，但训练时的序列长度决定了注意力偏置的有效性。
 
 + initializer_range, float, 0.02
 
