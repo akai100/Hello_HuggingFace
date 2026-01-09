@@ -7,7 +7,13 @@ Transformers旨在快速且易于使用，以便每个人都能开始学习或�
 
 ### PreTrainedConfig
 
-一个指定模型属性的文件，例如注意力头数或词汇量
+```PreTrainedConfig``` 是 Transformers 库中所有**模型配置类**的基类（父类），它的核心作用是：
+
++ 存储预训练模型的所有超参数和配置信息（比如模型层数、隐藏层维度、注意力头数、vocab 大小、是否使用偏置等）；
+  
++ 统一不同模型（如 BERT、GPT、RoBERTa 等）的配置加载 / 保存逻辑，让所有模型的配置管理方式保持一致；
+
++ 支持从预训练模型的配置文件（config.json）加载配置，也支持手动修改配置参数。
 
 ### PreTrainModel
 
@@ -18,3 +24,4 @@ Transformers旨在快速且易于使用，以便每个人都能开始学习或�
 ## 使用 Pipeline 进行推理
 
 ## 使用 Trainer 对模型进行微调
+
