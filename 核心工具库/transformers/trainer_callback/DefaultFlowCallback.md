@@ -38,7 +38,7 @@ TrainingArguments 配置 → DefaultFlowCallback 解析配置 → 训练节点�
 
 + 早停触发
 
-  会结合 ```state.best_metric``` 和 ```args.early_stopping_patience````，判断是否触发早停（设置 ```control.should_stop=True```）；
+  会结合 ```state.best_metric``` 和 ```args.early_stopping_patience``，判断是否触发早停（设置 ```control.should_stop=True```）；
 
 + 保存最优模型
 
