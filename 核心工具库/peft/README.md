@@ -7,6 +7,8 @@ PEFT方法仅微调少量（额外的）模型参数——这显著降低了计�
 
 ## LoraConfig
 
+这是用于存储 [LoraModel] 配置的配置类。
+
 ## get_peft_model
 
 从模型和配置中返回一个 Peft 模型对象，其中模型将被就地修改。
