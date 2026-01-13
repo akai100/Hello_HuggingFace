@@ -10,7 +10,7 @@
 
 | 参数名	| 类型	| 作用	| 取值范围 |
 |-------------|-------|------------|---------|
-| target_modules |	list[str]/str |	指定要插入 LoRA 适配器的模型模块名： - 列表：精准指定模块（如 ["q_proj", "v_proj"]） - "all-linear"：所有线性层 - None：默认适配对应模型的典型模块	 | 模块名列表 / 特殊值 |
+| target_modules |	list[str]/str |	指定要插入 LoRA 适配器的模型模块名：<br> - 列表：精准指定模块:<br>"q_proj"：查询<br>"k_proj":键<br>"v_proj"：值<br>"o_proj"：输出<br>"gate_proj"：门控<br>"up_proj"：上采样<br>"down_proj"：下采样<br> - "all-linear"：所有线性层<br> - None：默认适配对应模型的典型模块	 | 模块名列表 / 特殊值 |
 | target_linear_suffix	| list[str]	| 通过模块后缀匹配要微调的线性层（补充 target_modules）	| 后缀列表（如 ["proj", "fc"]）|
 | layers_to_transform	| list[int]/int	| 指定要微调的模型层索引：- 列表：仅微调指定层（如 [10,20,30]）- None：微调所有层	| 层索引列表 / None	|
 | layers_pattern	| str	| 层匹配的正则表达式，适配不同模型的层命名规则	| 正则字符串	|
