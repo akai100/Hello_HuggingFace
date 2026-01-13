@@ -1,10 +1,10 @@
 | 参数名	| 类型	| 作用	| 取值范围 |
 |-------|-------|-------|-----------|
-| r	| int	| LoRA 低秩矩阵的秩（核心参数），决定适配器的容量： - 越小：参数越少，训练速度快，但表达能力弱 - 越大：参数越多，表达能力强，但易过拟合	| 1~128（常用 8/16/32） |
+| r	| int	| LoRA 低秩矩阵的秩（核心参数），决定适配器的容量：<br> - 越小：参数越少，训练速度快，但表达能力弱<br> - 越大：参数越多，表达能力强，但易过拟合	| 1~128（常用 8/16/32） |
 | lora_alpha |	int/float	| 缩放系数，alpha/r 是 LoRA 适配器的学习率缩放因子，平衡适配器与原模型的贡献	| 通常为 r 的 2~8 倍 |
 | lora_dropout	| float	| Dropout 概率，随机丢弃适配器的部分输出，防止过拟合	| 0.0~0.5 |
-| bias	| str	| 是否训练模型的偏置项，可选值：- "none"：不训练任何偏置（推荐）- "all"：训练所有偏置- "lora_only"：仅训练 LoRA 适配器的偏置	| "none"/"all"/"lora_only" |
-| task_type	| str	| 指定微调任务类型，PEFT 会根据任务适配适配器插入逻辑	核心取值：- "CAUSAL_LM"（因果语言建模，如 Qwen3 生成）- "SEQ_CLS"（文本分类）- "QUESTION_ANSWERING"（问答）- "SEQ2SEQ_LM"（翻译 / 摘要）|
+| bias	| str	| 是否训练模型的偏置项，可选值：<br>- "none"：不训练任何偏置（推荐）<br>- "all"：训练所有偏置- "lora_only"：仅训练 LoRA 适配器的偏置	| "none"/"all"/"lora_only" |
+| task_type	| str	| 指定微调任务类型，PEFT 会根据任务适配适配器插入逻辑	核心取值：<br>- "CAUSAL_LM"（因果语言建模，如 Qwen3 生成）<br>- "SEQ_CLS"（文本分类）<br>- "QUESTION_ANSWERING"（问答）<br>- "SEQ2SEQ_LM"（翻译 / 摘要）|
 
 ##  进阶可选参数（适配大模型 / 定制化场景）
 
