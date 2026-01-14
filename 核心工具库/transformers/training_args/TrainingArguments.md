@@ -33,9 +33,6 @@ TrainingArguments 封装了模型训练的所有超参数和运行配置，涵�
 
 ## 学习率调度配置
 
-| 属性名 | 类型 | 默认值 | 核心作用 | 关联知识点 |
-|--------|-----|--------|---------|--------------|
-
 ### lr_scheduler_type
 
 学习率调度器类型，可选：linear/cosine/cosine_with_restarts/polynomial/constant/constant_with_warmup
@@ -113,31 +110,76 @@ TrainingArguments 封装了模型训练的所有超参数和运行配置，涵�
 + 类型：dict
 + 默认值：None
 
-### tf32 | bool | True | 是否启用 TF32 精度（NVIDIA Ampere+） | 加速矩阵运算，不损失精度 |
-### load_best_model_at_end | bool | False | 训练结束后加载最优模型 | 需配合evaluation_strategy使用 | 
-### optim | str | "adamw_hf" | 优化器类型 | 可选：adamw_hf/adamw_torch/adamw_apex/fused_adam（大模型推荐 fused_adam） |
-### optim_args | dict | None | 优化器额外参数 | 如{"betas": (0.9, 0.999), "eps": 1e-8}（你学的ϵ） |
+### tf32
+
+ 是否启用 TF32 精度（NVIDIA Ampere+），加速矩阵运算，不损失精度 
+ 
++ 类型：bool
++ 默认值：True
+
+### load_best_model_at_end
+
+ | bool | False | 训练结束后加载最优模型 | 需配合evaluation_strategy使用 | 
+ 
+### optim
+
+ str | "adamw_hf" | 优化器类型 | 可选：adamw_hf/adamw_torch/adamw_apex/fused_adam（大模型推荐 fused_adam） |
+ 
+### optim_args
+
+| dict | None | 优化器额外参数 | 如{"betas": (0.9, 0.999), "eps": 1e-8}（你学的ϵ） |
 
 
 ##  日志与监控配置
 
-| 属性名 | 类型	| 默认值 |	核心作用 |	面试考点 |
-|-------------|-----|-----------------|-------------------------|---------------------------------------|
-| logging_dir |	str |	output_dir/runs |	TensorBoard 日志保存路径	| 可视化训练曲线（损失 / 学习率 / 准确率） |
-| logging_strategy |	str |	"steps" |	日志记录策略	| 可选：steps/epoch/no（no = 不记录） } |
-| logging_steps| 	int	| 500	| 每多少步记录一次日志	| 大模型常用 100-1000 步，避免日志过多 |
-| logging_first_step| 	bool	| False	| 是否记录第一步的日志	| 调试时开启，验证训练是否正常 |
-| report_to| 	list[str]	| ["tensorboard"]	 | 日志上报工具	| 可选：tensorboard/wandb/comet/mlflow（wandb 是工业界主流） |
-| run_name| str	| None	| 训练任务名称（wandb/TensorBoard）	| 方便区分不同实验（如 "llama-7b-lora-lr5e-5"） |
+### logging_dir
+
+str |	output_dir/runs |	TensorBoard 日志保存路径	| 可视化训练曲线（损失 / 学习率 / 准确率） |
+
+### logging_strategy
+
+|	str |	"steps" |	日志记录策略	| 可选：steps/epoch/no（no = 不记录） } |
+
+### logging_steps
+
+| 	int	| 500	| 每多少步记录一次日志	| 大模型常用 100-1000 步，避免日志过多 |
+
+### logging_first_step
+
+| 	bool	| False	| 是否记录第一步的日志	| 调试时开启，验证训练是否正常 |
+
+### report_to
+
+| 	list[str]	| ["tensorboard"]	 | 日志上报工具	| 可选：tensorboard/wandb/comet/mlflow（wandb 是工业界主流） |
+
+### run_name
+
+| str	| None	| 训练任务名称（wandb/TensorBoard）	| 方便区分不同实验（如 "llama-7b-lora-lr5e-5"） |
 
 
 ##  Checkpoint 与模型保存配置
 
-| 属性名	类型	| 默认值	| 核心作用	| 工程要点 |
-|--------------|------|--------|--------------|
-| save_strategy	| str	| "steps"	模型保存策略	| 可选：steps/epoch/no（no = 不保存） |
-| save_steps	| int	| 500	| 每多少步保存一次 checkpoint	| 大模型常用 1000-5000 步，避免保存过频占空间 |
-| save_total_limit	| int	| None	| 最多保存的 checkpoint 数量	| 设为 3-5，自动删除旧 checkpoint，节省磁盘 |
-| save_safetensors	| bool	| True	| 是否用 safetensors 格式保存权重	| 安全、加载快，替代 pytorch_model.bin |
-| overwrite_output_dir	| bool	| False	| 是否覆盖输出目录	| 调试时开启，避免手动删除旧文件 |
-| resume_from_checkpoint	| str	| None	| 从指定 checkpoint 恢复训练	| 路径如./output/checkpoint-1000 |
+### save_strategy
+
+| str	| "steps"	模型保存策略	| 可选：steps/epoch/no（no = 不保存） |
+
+### save_steps
+
+| int	| 500	| 每多少步保存一次 checkpoint	| 大模型常用 1000-5000 步，避免保存过频占空间 |
+
+
+### save_total_limit
+
+| int	| None	| 最多保存的 checkpoint 数量	| 设为 3-5，自动删除旧 checkpoint，节省磁盘 |
+
+### save_safetensors
+
+| bool	| True	| 是否用 safetensors 格式保存权重	| 安全、加载快，替代 pytorch_model.bin |
+
+### overwrite_output_dir
+
+| bool	| False	| 是否覆盖输出目录	| 调试时开启，避免手动删除旧文件 |
+
+### resume_from_checkpoint
+
+| str	| None	| 从指定 checkpoint 恢复训练	| 路径如./output/checkpoint-1000 |
