@@ -9,34 +9,114 @@ TrainingArguments 封装了模型训练的所有超参数和运行配置，涵�
 | per_device_eval_batch_size	| int	| 8	| 单设备的评估批次大小 |	通常与训练批次一致或翻倍 |
 | num_train_epochs	| float	| 3.0 |	训练总轮数 |	大模型微调常用 1-3 轮，避免过拟合 |
 | learning_rate |	float |	5e-5	| 初始学习率	| 大模型微调常用 2e-5/1e-5，需配合调度器 |
-| seed |	int |	42	| 随机种子 |	保证训练可复现，所有随机操作都基于此 |
-| max_steps |	int |	-1 |	训练总步数（优先级高于 epoch） |	设为正数时，按步数停止而非 epoch |
-| gradient_accumulation_steps |	int |	1	| 梯度累积步数 | 显存不足时调大（如 8），等价于增大有效批次 |
 
+### seed
+
++ 类型：int |	42	| 随机种子 |	保证训练可复现，所有随机操作都基于此 |
+
+### max_steps
+
+训练总步数（优先级高于 epoch），设为正数时，按步数停止而非 epoch。
+
++ 类型：int
+
++ 默认值：-1
+
+### gradient_accumulation_steps 
+
++ 类型：int
+
++ 默认值：1
+
+训练模型时，正常流程是**每个batch计算梯度-> 用梯度更新模板参数 -> 清空梯度**。该值作用是，累积 N 个 batch 的梯度后，再统一更新一次参数，本质
+是用“时间换空间”，在显存不足时模拟更大的batch size。
 
 ## 学习率调度配置
 
 | 属性名 | 类型 | 默认值 | 核心作用 | 关联知识点 |
 |--------|-----|--------|---------|--------------|
-| lr_scheduler_type | str | "linear" | 学习率调度器类型 | 可选：linear/cosine/cosine_with_restarts/polynomial/constant/constant_with_warmup |
-| warmup_ratio | float | 0.0 | 预热步数占总步数的比例 | 大模型常用 0.05-0.1，避免初始学习率过高 | 
-| warmup_steps | int | 0 | 预热步数（优先级高于 ratio） | 与你之前学的τ（时间常数）关联，控制学习率上升阶段 |
-| learning_rate_end | float | None | 调度器最终学习率（仅 cosine/polynomial） | 避免学习率降到 0，常用 1e-7 | powerfloat1.0多项式调度器的幂次控制学习率下降速度 |
-| power | float | 1.0 | 多项式调度器的幂次 | 控制学习率下降速度 |
+
+### lr_scheduler_type
+
+学习率调度器类型，可选：linear/cosine/cosine_with_restarts/polynomial/constant/constant_with_warmup
+
++ 类型：str
++ 默认值："linear"
+
+### warmup_ratio
+
+预热步数占总步数的比例，大模型常用 0.05-0.1，避免初始学习率过高 。
+
++ 类型：float
++ 默认值：0.0 
+
+
+### warmup_steps
+
+预热步数（优先级高于 ratio） ，与你之前学的τ（时间常数）关联，控制学习率上升阶段 
+
++ 类型：int
++ 默认值：0
+
+### learning_rate_end
+
+调度器最终学习率（仅 cosine/polynomial），避免学习率降到 0，常用 1e-7 。
+
++ 类型：float
+
++ 默认值：None
+
+| powerfloat1.0多项式调度器的幂次控制学习率下降速度 |
+
+### power 
+
+多项式调度器的幂次， 控制学习率下降速度
+
++ 类型：float
+
++ 默认值：1.0
 
 ## 硬件与性能优化配置
 
-| 属性名 | 类型 | 默认值 | 核心作用 | 工程要点 |
-|--------|-----|--------|---------|-------|
-| fp16 | bool | False | 是否启用 FP16 混合精度训练 | 需 GPU 支持（如 NVIDIA Turing/Ampere 架构），节省显存 |
-| bf16 | bool | False | 是否启用 BF16 混合精度训练 | 需 GPU 支持（如 A100/H100），稳定性优于 FP16 |
-| fp16_full_eval | bool | False | 评估时是否用 FP16 | 加速评估，需与训练精度一致 |
-| gradient_checkpointing | bool | False | 是否启用梯度检查点 | 大模型训练必开，节省显存（牺牲～20% 速度） |
-| gradient_checkpointing_kwargs | dict | None | 梯度检查点额外参数 | 如{"use_reentrant": False}（新版 PyTorch 推荐） |
-| tf32 | bool | True | 是否启用 TF32 精度（NVIDIA Ampere+） | 加速矩阵运算，不损失精度 |
-| load_best_model_at_end | bool | False | 训练结束后加载最优模型 | 需配合evaluation_strategy使用 | 
-| optim | str | "adamw_hf" | 优化器类型 | 可选：adamw_hf/adamw_torch/adamw_apex/fused_adam（大模型推荐 fused_adam） |
-| optim_args | dict | None | 优化器额外参数 | 如{"betas": (0.9, 0.999), "eps": 1e-8}（你学的ϵ） |
+### fp16
+
+是否启用 FP16 混合精度训练 ，需 GPU 支持（如 NVIDIA Turing/Ampere 架构），节省显存。
+
++ 类型：bool
++ 默认值：False
+
+### bf16
+
+是否启用 BF16 混合精度训练，需 GPU 支持（如 A100/H100），稳定性优于 FP16。
+
++ 类型：bool
++ 默认值：False
+
+### fp16_full_eval
+
+评估时是否用 FP16，加速评估，需与训练精度一致
+
++ 类型：bool
++ 默认值：False
+
+### gradient_checkpointing
+
+是否启用梯度检查点，大模型训练必开，节省显存（牺牲～20% 速度）。
+
++ 类型：bool
++ 默认值：False
+
+### gradient_checkpointing_kwargs
+
+梯度检查点额外参数， 如{"use_reentrant": False}（新版 PyTorch 推荐） 
+
++ 类型：dict
++ 默认值：None
+
+### tf32 | bool | True | 是否启用 TF32 精度（NVIDIA Ampere+） | 加速矩阵运算，不损失精度 |
+### load_best_model_at_end | bool | False | 训练结束后加载最优模型 | 需配合evaluation_strategy使用 | 
+### optim | str | "adamw_hf" | 优化器类型 | 可选：adamw_hf/adamw_torch/adamw_apex/fused_adam（大模型推荐 fused_adam） |
+### optim_args | dict | None | 优化器额外参数 | 如{"betas": (0.9, 0.999), "eps": 1e-8}（你学的ϵ） |
 
 
 ##  日志与监控配置
