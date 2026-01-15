@@ -89,6 +89,9 @@ def __call__(
   类型：int，默认值：0
 
 + is_split_into_words
+
+  是否已将文本拆分为单词（无需分词器再分词）
+  
 + pad_to_multiple_of
 
   将补全后的长度对齐到指定倍数（如 8/16），适配硬件加速（Tensor Core）
