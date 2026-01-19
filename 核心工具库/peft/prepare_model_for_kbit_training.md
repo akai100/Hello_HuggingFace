@@ -28,3 +28,30 @@
 + 冻结原始参数
 
   确保基础模型的量化权重保持不变（Requires Grad = False），只让后续添加的 LoRA 插件可训练。
+
+## 使用
+
+```python3from transformers import AutoModelForCausalLM, BitsAndBytesConfig
+from peft import prepare_model_for_kbit_training, LoraConfig, get_peft_model
+
+# 1. 配置 4-bit 量化加载
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype="float16"
+)
+
+# 2. 加载基础模型
+model = AutoModelForCausalLM.from_pretrained("base_model_path", quantization_config=bnb_config)
+
+# 3. 【核心步骤】为 k-bit 训练做准备
+# 这步不执行，后续训练极易报错或不收敛
+model = prepare_model_for_kbit_training(model)
+
+# 4. 配置并添加 LoRA 适配器
+config = LoraConfig(r=8, lora_alpha=32, target_modules=["q_proj", "v_proj"], task_type="CAUSAL_LM")
+model = get_peft_model(model, config)
+
+# 现在模型已经准备好进行训练了
+
+```
