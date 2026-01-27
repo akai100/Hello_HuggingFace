@@ -2,13 +2,41 @@ TrainingArguments 封装了模型训练的所有超参数和运行配置，涵�
 
 ## 核心基础配置
 
-| 属性名 | 类型 | 默认值 | 核心作用 |  工程面试要点 |
-|--------|------|------|---------|-----------------|
-| output_dir | str |	必填	| 训练结果保存路径（checkpoint、日志、模型） |	必须指定，否则报错 |
-| per_device_train_batch_size	| int |	8	| 单设备（GPU/CPU）的训练批次大小 |	显存不足时调小，如 4/2 |
-| per_device_eval_batch_size	| int	| 8	| 单设备的评估批次大小 |	通常与训练批次一致或翻倍 |
-| num_train_epochs	| float	| 3.0 |	训练总轮数 |	大模型微调常用 1-3 轮，避免过拟合 |
-| learning_rate |	float |	5e-5	| 初始学习率	| 大模型微调常用 2e-5/1e-5，需配合调度器 |
+### output_dir 
+
++ 类型：str，必填
++ 作用：训练结果保存路径（checkpoint、日志、模型），必须指定，否则报错
+
+### per_device_train_batch_size
+
++ 类型：int
++ 默认值：8
++ 作用：单设备（GPU/CPU）的训练批次大小
+  显存不足时调小，如 4/2
+
+### per_device_eval_batch_size
+
++ 类型：int
++ 默认值：8
++ 作用：单设备的评估批次大小
+  通常与训练批次一致或翻倍
+
+### num_train_epochs
+
++ 类型：float
++ 默认值：3.0
++ 作用：训练总轮数
+  大模型微调常用 1-3 轮，避免过拟合
+
+### learning_rate
+
++ 类型：float
+
++ 默认值：5e-5	|
+
++ 作用：初始学习率
+  
+  大模型微调常用 2e-5/1e-5，需配合调度器
 
 ### seed
 
